@@ -1,16 +1,17 @@
 # CLI Shell
 
-This project provides boilerplate for a command-line interface. 
+This project is for my own personal reference and provides boilerplate for a command-line interface. 
 Command line arguments are parsed by the CommandLineParser library. 
-You add Tasks that correspond to the Verbs supported by your CLI program. 
+Add Tasks that correspond to the Verbs supported by the CLI program. 
 The program is set up using standard .NET host building and dependency injection patterns.
 This should be a Visual Studio template, but I'm not there yet.
 
 ## Getting Started
 
-Here's the implementation of Main. You set up the configuration and register services and return the result of Run():
+Here's the implementation of Main. You call CliShell.Create with Program as the template argument. This is used to find and register your tasks automatically.
+Pass the command line arguments and then do standard host setup to add configuration sources and register services and dependencies:
 
-```
+```csharp
 using Skrymsli.CliShell;
 
 // This line will register all the Tasks in the assembly containing the type Program
@@ -36,9 +37,10 @@ This sets up a basic CLI application and automatically integrates with CommandLi
 ## Defining Tasks
 
 Here's a simple example of a Task that maps to a CLI verb. You implement IRunnableTask and decoate the class with the Verb attribute from CommandLineParser.
-This class will be automatically registered and mapped to the "test" verb in the CLI.
+This class will be automatically registered and mapped to the "test" verb in the CLI. You can add dependencies in the constructor or resolve them from the
+service scope passed to Execute as in this example:
 
-```
+```csharp
     [Verb("test", HelpText = "Demonstrates the cli pattern.")]
     internal sealed class TestTask : IRunnableTask
     {
@@ -56,7 +58,7 @@ This class will be automatically registered and mapped to the "test" verb in the
 
 The implementation of ITestService looks like this:
 
-```
+```csharp
     internal sealed class TestService : ITestService
     {
         public string GetMessage() => "Hello from the test service.";
@@ -72,4 +74,3 @@ And it will output:
 ```
 Hello from the test service. :)
 ```
-
